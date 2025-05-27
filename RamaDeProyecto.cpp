@@ -193,18 +193,20 @@ void savePlayersToFile(PlayerNode *headPlayer) {
 }
 
 void printAllPlayers(PlayerNode *headPlayer){
-	PlayerNode* current = headPlayer;
+	if (headPlayer == NULL) {
+        printf("\n-- No hay jugadores registrados --\n");
+        return;
+    }
+
+    PlayerNode *current = headPlayer;
     while (current != NULL) {
-    	printf("\n----------JUGADOR:---------\n");
-        printf("Id: %d\n",current->player.id);
-        printf("Nombre: %s\n",
-						current->player.name);
-		printf("Nickname: %s\n",
-						current->player.nickname);
-		printf("Edad: %d\n",
-						current->player.age);
-		printf("Puntos: %d\n",
-						current->player.points);
+        printf("\n---------- JUGADOR ----------\n");
+        printf("ID: %d\n", current->player.id);
+        printf("Nombre: %s\n", current->player.name);
+        printf("Nickname: %s\n", current->player.nickname);
+        printf("Edad: %d\n", current->player.age);
+        printf("Victorias: %d\n", current->player.points);
+        printf("Personaje actual: %s\n", strlen(current->player.character) ? current->player.character : "--");
         current = current->next;
     }
 }
