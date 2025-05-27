@@ -27,7 +27,7 @@ PlayerNode* createPlayerNode(Player);
 void addPlayer(PlayerNode**);
 void savePlayersToFile(PlayerNode*);
 void printAllPlayers(PlayerNode*);
-void loadFromFile(Player**);
+void loadFromFile(PlayerNode**);
 /*
 ......... MAIN ....................
 */
