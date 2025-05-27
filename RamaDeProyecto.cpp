@@ -18,6 +18,18 @@ typedef struct PlayerNode{
 	PlayerNode *prev;
 }PlayerNode;
 
+//Lista de personajes
+typedef struct {
+    char name[MAX_LEN_STR];
+    int victories;
+} Characters;
+
+typedef struct CharacterNode {
+    Characters character;
+    struct CharacterNode *next;
+    struct CharacterNode *prev;
+} CharacterNode;
+
 //Prototypes
 //General
 void cleanBuffer();
