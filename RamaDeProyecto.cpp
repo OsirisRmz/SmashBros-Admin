@@ -10,6 +10,7 @@ typedef struct{
 	char nickname[MAX_LEN_STR];
 	int age;
 	int points;
+	char character[MAX_LEN_STR];
 }Player;
 
 typedef struct PlayerNode{
@@ -30,27 +31,77 @@ typedef struct CharacterNode{
     struct CharacterNode *prev;
 }CharacterNode;
 
-//Prototypes
+//----Funciones-----//
 //General
 void cleanBuffer();
 //Player
 Player createPlayer();
 PlayerNode* createPlayerNode(Player);
-void addPlayer(PlayerNode**);
-void savePlayersToFile(PlayerNode*);
-void printAllPlayers(PlayerNode*);
-void loadFromFile(PlayerNode**);
-/*
-......... MAIN ....................
-*/
+void addPlayer(PlayerNode **);
+void savePlayersToFile(PlayerNode *);
+void printAllPlayers(PlayerNode *);
+void loadFromFile(PlayerNode **);
+int countPlayers(PlayerNode *);
+void displayTopNPlayers(PlayerNode *, int N);
+void showStatistics(PlayerNode *);
+/* -------------------------------------------------------------------------- */
+/*                                   MAIN                                     */
+/* -------------------------------------------------------------------------- */
 int main(){
 	PlayerNode *headPlayer = NULL;
-	addPlayer(&headPlayer);
-	addPlayer(&headPlayer);
-	addPlayer(&headPlayer);
-	savePlayersToFile(headPlayer);
-	loadFromFile(&headPlayer);
-	printAllPlayers(headPlayer);
+	CharacterNode *headCharacters = NULL;
+
+    int opcion;
+    do {
+        printf("\n==== MEN%c TORNEO SUPER SMASH ====\n", 233);
+        printf("1. Agregar jugador\n");
+        printf("2. Agregar personaje\n");
+        printf("3. Asignar personajes aleatoriamente\n");
+        printf("4. Registrar partida (sumar victoria)\n");
+        printf("5. Mostrar todos los jugadores\n");
+        printf("6. Guardar jugadores en archivo\n");
+        printf("7. Cargar jugadores desde archivo\n");
+        printf("8. Consultar estad%csticas\n", 161);
+        printf("0. Salir\n");
+        printf("Opci%cn: ", 162);
+        if (scanf("%d", &opcion) != 1) opcion = -1;
+        cleanBuffer();
+
+        switch (opcion) {
+        case 1:
+            addPlayer(&headPlayers);
+            savePlayersToFile(headPlayers);
+            break;
+        case 2:
+            addCharacter(&headCharacters);
+            break;
+        case 3:
+            randomCharacter(headPlayers, headCharacters);
+            break;
+        case 4:
+            registrarPartida(headPlayers, headCharacters);
+            savePlayersToFile(headPlayers);
+            break;
+        case 5:
+            printAllPlayers(headPlayers);
+            break;
+        case 6:
+            savePlayersToFile(headPlayers);
+            break;
+        case 7:
+            loadFromFile(&headPlayers);
+            break;
+        case 8:
+            showStatistics(headPlayers);
+            break;
+        case 0:
+        	savePlayersToFile(headPlayers);
+            printf("Saliendo del programa...\n");
+            break;
+        default:
+            printf("Opci%cn no valida. Intenta de nuevo.\n", 162);
+        }
+    } while (opcion != 0);
 	return 0;
 }
 
@@ -59,16 +110,19 @@ int main(){
 */
 Player createPlayer(){
 	Player newPlayer;
-	newPlayer.id = 0; // change this line
-	
-	printf("\nDame el nombre del jugador:");
-	fgets(newPlayer.name, MAX_LEN_STR, stdin);
-	newPlayer.name[strcspn(newPlayer.name, "\n")] = 0;
-	printf("\nDame el nickname sin espacios: ");
-	scanf("%s", newPlayer.nickname);
-	printf("\nDame edad: ");
-	scanf("%d", &newPlayer.age);
-	newPlayer.points = 0;
+	printf("\nNombre del jugador: ");
+    fgets(newPlayer.name, MAX_LEN_STR, stdin);
+    newPlayer.name[strcspn(newPlayer.name, "\n")] = 0;
+
+    printf("Nickname sin espacios: ");
+    scanf("%s", newPlayer.nickname);
+
+    printf("Edad: ");
+    scanf("%d", &newPlayer.age);
+
+    newPlayer.points = 0;
+    newPlayer.id = currentID++;
+    newPlayer.character[0] = '\0';
 	
 	cleanBuffer();
 	return newPlayer;
@@ -78,6 +132,10 @@ PlayerNode* createPlayerNode(Player newPlayer){
     PlayerNode *newPlayerNode;
 	newPlayerNode = (PlayerNode*)malloc(
 							sizeof(PlayerNode));
+    if (!newPlayerNode) {
+        perror("Error al reservar memoria para jugador\n");
+        exit(EXIT_FAILURE);
+    }
     newPlayerNode->player = newPlayer;
     newPlayerNode->next = NULL;
     newPlayerNode->prev = NULL;
