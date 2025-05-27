@@ -19,16 +19,16 @@ typedef struct PlayerNode{
 }PlayerNode;
 
 //Lista de personajes
-typedef struct {
+typedef struct{
     char name[MAX_LEN_STR];
     int victories;
-} Characters;
+}Characters;
 
-typedef struct CharacterNode {
+typedef struct CharacterNode{
     Characters character;
     struct CharacterNode *next;
     struct CharacterNode *prev;
-} CharacterNode;
+}CharacterNode;
 
 //Prototypes
 //General
@@ -185,4 +185,50 @@ void loadFromFile(PlayerNode **headPlayer) {
 
     fclose(file);
 	printf("Jugadores cargados correctamente.\n");
+}
+
+// FUNCIONES SOBRE LOS PERSONAJES 
+Characters createCharacter(){
+    Characters newChar;
+    printf("\nNombre del personaje: ");
+    fgets(newChar.name, MAX_LEN_STR, stdin);
+    newChar.name[strcspn(newChar.name, "\n")] = 0;
+    newChar.victories = 0;
+    return newChar;
+}
+
+CharacterNode *createCharacterNode(Characters newChar){
+    CharacterNode *newNode = (CharacterNode *)malloc(sizeof(CharacterNode));
+    if(!newNode){
+        perror("Error al reservar memoria para personaje\n");
+        exit(EXIT_FAILURE);
+    }
+    newNode->character = newChar;
+    newNode->next = NULL;
+    newNode->prev = NULL;
+    return newNode;
+}
+
+void addCharacter(CharacterNode **headChar) {
+    Characters newChar = createCharacter();
+    CharacterNode *newNode = createCharacterNode(newChar);
+
+    if (*headChar == NULL) {
+        *headChar = newNode;
+        return;
+    }
+
+    CharacterNode *last = *headChar;
+    while (last->next != NULL) last = last->next;
+    last->next = newNode;
+    newNode->prev = last;
+}
+
+int countCharacters(CharacterNode *head) {
+    int count = 0;
+    while (head != NULL) {
+        count++;
+        head = head->next;
+    }
+    return count;
 }
