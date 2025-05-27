@@ -217,7 +217,7 @@ void loadFromFile(PlayerNode **headPlayer) {
         return;
     }
 
-    char line[1024];
+    char line[256];
     while (fgets(line, sizeof(line), file)) {
         PlayerNode* newPlayer = (PlayerNode*)malloc(sizeof(PlayerNode));
         if (newPlayer == NULL) {
@@ -227,26 +227,85 @@ void loadFromFile(PlayerNode **headPlayer) {
         }
 
         // Parse the line from the file
-        if (sscanf(line, "%d|%s|%s|%d|%d\n",
-            &newPlayer->player.id,
-			newPlayer->player.name,
-			newPlayer->player.nickname,
-			&newPlayer->player.age,
-			&newPlayer->player.points) != 5) {
-            printf("Warning: Invalid format in line: %s", line);
-            free(newPlayer);
+        if (sscanf(line, "%d|%49[^|]|%49[^|]|%d|%d|%49[^\n]", &newNode->player.id, newNode->player.name,
+                   newNode->player.nickname, &newNode->player.age, &newNode->player.points,
+                   newNode->player.character) != 6) {
+            printf("Advertencia: formato inv%clido en linea: %s", line, 160);
+            free(newNode);
             continue;
         }
+	/* Mantener ID siguiente correcto */
+        if (newNode->player.id >= currentID) currentID = newNode->player.id + 1;
 
-        // Add the question to the list
-        newPlayer->next = *headPlayer;
-        *headPlayer = newPlayer;
+        /* Insertar al inicio por simplicidad */
+        newNode->next = *headPlayer;
+        if (*headPlayer) (*headPlayer)->prev = newNode;
+        newNode->prev = NULL;
+        *headPlayer = newNode;
     }
 
     fclose(file);
 	printf("Jugadores cargados correctamente.\n");
 }
+int countPlayers(PlayerNode *head) {
+}
+void displayTopNPlayers(PlayerNode *head, int N) {
+    int total = countPlayers(head);
+    if (total == 0) {
+        printf("No hay jugadores registrados.\n");
+        return;
+    }
 
+    /* Copiar nodos a un arreglo para ordenar */
+    PlayerNode **arr = (PlayerNode **)malloc(total * sizeof(PlayerNode *));
+    if (!arr) {
+        perror("Error al reservar memoria para ordenacion\n");
+        return;
+    }
+
+    PlayerNode *temp = head;
+    for (int i = 0; i < total; i++) {
+        arr[i] = temp;
+        temp = temp->next;
+    }
+
+    /* Ordenar por victoria (puntos) descendente - simple selecci n */
+    for (int i = 0; i < total - 1; i++) {
+        int maxIdx = i;
+        for (int j = i + 1; j < total; j++) {
+            if (arr[j]->player.points > arr[maxIdx]->player.points) maxIdx = j;
+        }
+        if (maxIdx != i) {
+            PlayerNode *swap = arr[i];
+            arr[i] = arr[maxIdx];
+            arr[maxIdx] = swap;
+        }
+    }
+
+    int limite = (N > total || N == 0) ? total : N; /* Si N==0 imprimimos todos */
+
+    printf("\n===== TOP %d JUGADORES =====\n", (limite == total && N != 0) ? N : limite);
+    for (int i = 0; i < limite; i++) {
+        printf("%2d) %s (Nickname: %s) - %d victorias\n", i + 1, arr[i]->player.name, arr[i]->player.nickname,
+               arr[i]->player.points);
+    }
+
+    free(arr);
+}
+void showStatistics(PlayerNode *headPlayers) {
+    int opcion;
+    do {
+        printf("\n==== CONSULTA DE ESTAD%cSTICAS ===="
+               "\n1. Top 5"
+               "\n2. Top 10"
+               "\n3. Todos los jugadores"
+               "\n0. Volver al men  principal"
+               "\nOpci%cn: ", 214, 162);
+        if (scanf("%d", &opcion) != 1) opcion = -1;
+        cleanBuffer();
+
+    } while (opcion != 0);
+}
 //-------------------------FUNCIONES SOBRE LOS PERSONAJES-----------------------------------
 Characters createCharacter(){
     Characters newChar;
