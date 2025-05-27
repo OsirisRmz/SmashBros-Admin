@@ -187,7 +187,7 @@ void loadFromFile(PlayerNode **headPlayer) {
 	printf("Jugadores cargados correctamente.\n");
 }
 
-// FUNCIONES SOBRE LOS PERSONAJES 
+//-------------------------FUNCIONES SOBRE LOS PERSONAJES-----------------------------------
 Characters createCharacter(){
     Characters newChar;
     printf("\nNombre del personaje: ");
@@ -231,4 +231,57 @@ int countCharacters(CharacterNode *head) {
         head = head->next;
     }
     return count;
+}
+CharacterNode *getCharacterByIndex(CharacterNode *head, int index) {
+    int i = 0;
+    while (head != NULL && i < index) {
+        head = head->next;
+        i++;
+    }
+    return head;
+}
+void randomCharacter(PlayerNode *headPlayers, CharacterNode *headCharacters) {
+    int nCharacters = countCharacters(headCharacters);
+    if (nCharacters == 0) {
+        printf("No hay personajes disponibles.\n");
+        return;
+    }
+
+    /* Contar jugadores */
+    int nPlayers = countPlayers(headPlayers);
+    if (nPlayers == 0) {
+        printf("No hay jugadores registrados.\n");
+        return;
+    }
+
+    if (nPlayers > nCharacters) {
+        printf("Hay mas jugadores (%d) que personajes (%d), no se puede asignar sin repetir.\n", nPlayers, nCharacters);
+        return;
+    }
+
+    /* Crear arreglo de  ndices y mezclar */
+    int *indices = (int *)malloc(nCharacters * sizeof(int));
+    if (!indices) {
+        perror("Error al reservar memoria para aleatorizacion\n");
+        return;
+    }
+    for (int i = 0; i < nCharacters; i++) indices[i] = i;
+
+    srand((unsigned)time(NULL));
+    for (int i = nCharacters - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        int tmp = indices[i];
+        indices[i] = indices[j];
+        indices[j] = tmp;
+    }
+
+    /* Asignar */
+    PlayerNode *player = headPlayers;
+    for (int i = 0; i < nPlayers; i++) {
+        CharacterNode *charNode = getCharacterByIndex(headCharacters, indices[i]);
+        if (charNode) strncpy(player->player.character, charNode->character.name, MAX_LEN_STR);
+        player = player->next;
+    }
+    free(indices);
+    printf("Personajes asignados aleatoriamente a los jugadores.\n");
 }
