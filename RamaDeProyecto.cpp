@@ -44,6 +44,16 @@ void loadFromFile(PlayerNode **);
 int countPlayers(PlayerNode *);
 void displayTopNPlayers(PlayerNode *, int N);
 void showStatistics(PlayerNode *);
+/* Personajes */
+Characters createCharacter();
+CharacterNode *createCharacterNode(Characters);
+void addCharacter(CharacterNode **);
+int countCharacters(CharacterNode *);
+CharacterNode *getCharacterByIndex(CharacterNode *, int);
+void randomCharacter(PlayerNode *, CharacterNode *);
+void registrarPartida(PlayerNode *, CharacterNode *);
+
+int currentID = 1; /* Se actualiza al cargar desde archivo */
 /* -------------------------------------------------------------------------- */
 /*                                   MAIN                                     */
 /* -------------------------------------------------------------------------- */
