@@ -258,6 +258,12 @@ void loadFromFile(PlayerNode **headPlayer) {
 	printf("Jugadores cargados correctamente.\n");
 }
 int countPlayers(PlayerNode *head) {
+	int count = 0;
+    while (head) {
+        count++;
+        head = head->next;
+    }
+    return count;
 }
 void displayTopNPlayers(PlayerNode *head, int N) {
     int total = countPlayers(head);
@@ -313,7 +319,22 @@ void showStatistics(PlayerNode *headPlayers) {
                "\nOpci%cn: ", 214, 162);
         if (scanf("%d", &opcion) != 1) opcion = -1;
         cleanBuffer();
-
+	    
+	switch (opcion) {
+        case 1:
+            displayTopNPlayers(headPlayers, 5);
+            break;
+        case 2:
+            displayTopNPlayers(headPlayers, 10);
+            break;
+        case 3:
+            displayTopNPlayers(headPlayers, 0); /* 0 = imprimir todos */
+            break;
+        case 0:
+            break;
+        default:
+            printf("Opci%cn invalida. Intenta nuevamente.\n", 162);
+        }
     } while (opcion != 0);
 }
 //-------------------------FUNCIONES SOBRE LOS PERSONAJES-----------------------------------
