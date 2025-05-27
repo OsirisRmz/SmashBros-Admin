@@ -3,13 +3,13 @@
 #include<string.h>
 
 #define MAX_LEN_STR 50
-
-typedef struct{
+//estructuras para jugador
+typedef struct{//estructura de nodo general
 	int id;
 	char name[MAX_LEN_STR];
 	char nickname[MAX_LEN_STR];
 	int age;
-	int points;
+	int points;/* Victorias acumuladas */
 	char character[MAX_LEN_STR];
 }Player;
 
