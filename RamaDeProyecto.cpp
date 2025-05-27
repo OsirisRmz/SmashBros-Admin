@@ -265,7 +265,7 @@ int countPlayers(PlayerNode *head) {
     }
     return count;
 }
-void displayTopNPlayers(PlayerNode *head, int N) {
+void displayTopNPlayers(PlayerNode *head, int N){
     int total = countPlayers(head);
     if (total == 0) {
         printf("No hay jugadores registrados.\n");
@@ -359,11 +359,11 @@ CharacterNode *createCharacterNode(Characters newChar){
     return newNode;
 }
 
-void addCharacter(CharacterNode **headChar) {
+void addCharacter(CharacterNode **headChar){
     Characters newChar = createCharacter();
     CharacterNode *newNode = createCharacterNode(newChar);
 
-    if (*headChar == NULL) {
+    if(*headChar == NULL){
         *headChar = newNode;
         return;
     }
@@ -374,7 +374,7 @@ void addCharacter(CharacterNode **headChar) {
     newNode->prev = last;
 }
 
-int countCharacters(CharacterNode *head) {
+int countCharacters(CharacterNode *head){
     int count = 0;
     while (head != NULL) {
         count++;
@@ -382,17 +382,19 @@ int countCharacters(CharacterNode *head) {
     }
     return count;
 }
-CharacterNode *getCharacterByIndex(CharacterNode *head, int index) {
+
+CharacterNode *getCharacterByIndex(CharacterNode *head, int index){
     int i = 0;
-    while (head != NULL && i < index) {
+    while(head != NULL && i < index){
         head = head->next;
         i++;
     }
     return head;
 }
-void randomCharacter(PlayerNode *headPlayers, CharacterNode *headCharacters) {
+
+void randomCharacter(PlayerNode *headPlayers, CharacterNode *headCharacters){
     int nCharacters = countCharacters(headCharacters);
-    if (nCharacters == 0) {
+    if(nCharacters == 0){
         printf("No hay personajes disponibles.\n");
         return;
     }
