@@ -172,4 +172,5 @@ void loadFromFile(PlayerNode **headPlayer) {
     }
 
     fclose(file);
+	printf("Jugadores cargados correctamente.\n");
 }
