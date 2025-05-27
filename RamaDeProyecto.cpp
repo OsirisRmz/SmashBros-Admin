@@ -435,3 +435,44 @@ void randomCharacter(PlayerNode *headPlayers, CharacterNode *headCharacters) {
     free(indices);
     printf("Personajes asignados aleatoriamente a los jugadores.\n");
 }
+void registrarPartida(PlayerNode *headPlayers, CharacterNode *headCharacters) {
+    int idGanador;
+    printf("\n--- REGISTRO DE PARTIDA ---\n");
+    printAllPlayers(headPlayers);
+
+    printf("\nIngresa el ID del jugador que gana la partida: ");
+    if (scanf("%d", &idGanador) != 1) {
+        printf("Entrada inv%clida.\n", 160);
+        cleanBuffer();
+        return;
+    }
+    cleanBuffer();
+
+    PlayerNode *jugador = headPlayers;
+    while (jugador && jugador->player.id != idGanador) jugador = jugador->next;
+
+    if (!jugador) {
+        printf("ID no encontrado.\n");
+        return;
+    }
+
+    /* Incrementar victorias del jugador */
+    jugador->player.points += 1;
+    printf("Se suma una victoria a %s (%s)\n", jugador->player.name, jugador->player.character[0] ? jugador->player.character : "Sin personaje asignado");
+    if(strlen(jugador->player.character)==0){
+    	printf("El jugador no tiene personaje asignado, no se puede registrar la partida\n");
+	}
+
+    /* Incrementar victorias del personaje correspondiente */
+    CharacterNode *personaje = headCharacters;
+    while (personaje) {
+        if (strcmp(personaje->character.name, jugador->player.character) == 0) {
+            personaje->character.victories += 1;
+            printf("Se suma una victoria al personaje: %s\n", personaje->character.name);
+            return;
+        }
+        personaje = personaje->next;
+    }
+
+    printf("Personaje '%s' no encontrado en la lista.\n", jugador->player.character);
+}
